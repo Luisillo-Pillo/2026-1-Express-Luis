@@ -14,7 +14,13 @@ const server = http.createServer((req, res) => {
                 if (index === null || isNaN(index)) {
                     res.statusCode = 200;
                     res.end(JSON.stringify({ numbers }));
-                }
+                } else if (index >= 0 && index < numbers.length) {
+                    res.statusCode = 200;
+                    res.end (JSON.stringify({ value: numbers[index] }))
+                } else {
+                    res.statusCode = 404;
+                    res.end(JSON.stringify ({error: "Índice no encontrado (404)"}))
+                };
                 break;
 
             default:
