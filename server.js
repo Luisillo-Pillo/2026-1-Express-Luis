@@ -17,6 +17,9 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({error:"Método no permitido (405)"}));
                 break;
         }
+    } else {
+        res.statusCode = 404;
+        res.end(JSON.stringify({error: "Ruta no encontrada (404)"}));
     }
 });
 
