@@ -12,6 +12,11 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({message:"GET Recurso obtenido con éxito (200 OK"}));
                 break;
 
+            case "POST":
+                res.statusCode = 201;
+                res.end(JSON.stringify({message:"POST Recurso creado (201 OK"}));
+                break;
+
             default:
                 res.statusCode = 405;
                 res.end(JSON.stringify({error:"Método no permitido (405)"}));
