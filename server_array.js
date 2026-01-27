@@ -24,6 +24,8 @@ const server = http.createServer((req, res) => {
                 break;
 
             default:
+                res.statusCode = 405;
+                res.end(JSON.stringify({error: "Ruta no encontrada (404)"}))
                 break;
         };
     };
