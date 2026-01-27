@@ -8,6 +8,7 @@ const server = http.createServer((req, res) => {
 
     if (url.startsWith("/numbers")) { //    http://localhost:3000/numbers
         const parts = url.split("/"); //    /numbers/2 = ["", "numbers", 2]
+        const index = parts.length > 2 ? parseInt(parts[2]) : null;
     };
 });
 
