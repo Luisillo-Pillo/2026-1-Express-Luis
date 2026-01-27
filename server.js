@@ -9,22 +9,22 @@ const server = http.createServer((req, res) => {
         switch (method) {
             case "GET":
                 res.statusCode = 200;
-                res.end(JSON.stringify({message:"GET Recurso obtenido con éxito (200 OK"}));
+                res.end(JSON.stringify({message:"GET Recurso obtenido con éxito (200)"}));
                 break;
 
             case "POST":
                 res.statusCode = 201;
-                res.end(JSON.stringify({message:"POST Recurso creado (201"}));
+                res.end(JSON.stringify({message:"POST Recurso creado (201)"}));
                 break;
 
             case "Put":
                 res.statusCode = 200;
-                res.end(JSON.stringify({message:"PUT Recurso actualizado (200"}));
+                res.end(JSON.stringify({message:"PUT Recurso actualizado (200)"}));
                 break;
 
             case "DELETE":
                 res.statusCode = 204;
-                res.end(JSON.stringify({message:"DELETE Recurso eliminado (204"}));
+                res.end(JSON.stringify({message:"DELETE Recurso eliminado (204)"}));
                 break;
 
             default:
