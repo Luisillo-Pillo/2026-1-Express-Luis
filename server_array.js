@@ -9,6 +9,17 @@ const server = http.createServer((req, res) => {
     if (url.startsWith("/numbers")) { //    http://localhost:3000/numbers
         const parts = url.split("/"); //    /numbers/2 = ["", "numbers", 2]
         const index = parts.length > 2 ? parseInt(parts[2]) : null;
+        switch (method) {
+            case "GET":
+                if (index === null || isNaN(index)) {
+                    res.statusCode = 200;
+                    res.end(JSON.stringify({ numbers }));
+                }
+                break;
+
+            default:
+                break;
+        };
     };
 });
 
