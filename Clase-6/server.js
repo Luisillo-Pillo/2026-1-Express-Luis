@@ -27,6 +27,28 @@ app.post("/numbers", (req, res) => {
     res.status(201).json({message:"Número agregado", numbers});
 });
 
+app.put("/numbers/:index", (req, res) => {
+    const index = parseInt(req.params.index);
+    if (isNaN(index) || index < 0 || index >= numbers.length) {
+        return res.status(400).json({error:"Índice no encontrado 404"});
+    };
+    const { value } = req.body;
+    if (typeof value !== "number") {
+        return res.status (404).json({ error: "Debes enviar un número válido" });
+    }
+    numbers[index] = value;
+    res.json({ message: "Número actualizado", numbers });
+});
+
+app.delete("/numbers/:index", (req, res) => {
+    const index = parseInt(req.params.index);
+    if (isNaN(index) || index < 0 || index >= numbers.length) {
+        return res.status(404).json({ error: "Índice no encontrado 404" });
+    };
+    numbers.splice(index, 1);
+    res.json({ message: "Número eliminado", numbers });
+});
+
 app.listen(3000, () => {
     console.log("Servidor ejecutándose en el puerto 3000");
 })
