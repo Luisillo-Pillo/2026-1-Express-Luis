@@ -18,6 +18,15 @@ app.get("/numbers/:index", (req, res) => {
     res.json({ value: numbers[index] });
 });
 
+app.post("/numbers", (req, res) => {
+    const {value} = req.body;
+    if(typeof value !== "number") {
+        return res.status(400).json({error:"Debes enviar un número válido 404"});
+    };
+    numbers.push(value);
+    res.status(201).json({message:"Número agregado", numbers});
+});
+
 app.listen(3000, () => {
     console.log("Servidor ejecutándose en el puerto 3000");
 })
