@@ -8,6 +8,21 @@ let users = [
     { id: 7, name: "Guillermo" }
 ];
 
+const parseId = (req, res) => {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id < 1 ) {
+        res
+            .status(400)
+            .json({ message: "El ID debe ser un entero mayor o igual a 1" });
+            return null;
+    };
+
+    return id;
+};
+
+const findUserIndexById = (id) => users.findIndex((u) => u.id === id);
+
 const validateName = (req, res) => {
     const { name } = req.body;
     if ( name === undefined || name === null ) {
@@ -34,14 +49,9 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-    const id = Number(req.params.id);
-
-    if (!Number.isInteger(id) || id < 1 ) {
-        return res
-            .status(400)
-            .json({ message: "El ID debe ser un entero mayor o igual a 1" });
-    }
-
+    const id = parseId(req, res);
+    if (id === null) return;
+    
     let user = users.find((u) => u.id === id);
 
     if ( !user ) {
@@ -62,8 +72,27 @@ const createUser = (req, res) => {
     return res.status(201).json(newUser);
 };
 
-const updateUser = (req, res) => {};
+const updateUser = (req, res) => {
+    const id = parseId(req, res);
+    if ( id === null) return;
 
-const deleteUser = (req, res) => {};
+    const index = findUserIndexById(id);
+
+    if (index === -1) {
+        return res.status(404).json({ message: "El ID no existe" });
+    };
+
+    const name = validateName(req, res);
+    if (name === null || name === undefined) return;
+
+    const updated = {id, name};
+    users[index] = updated;
+    return res.jeson(updated);
+};
+
+const deleteUser = (req, res) => {
+    const name = validateName(req, res);
+    if ( name === null || name === undefined) return;
+};
 
 export { getUsers, getUserById, createUser, updateUser, deleteUser };
