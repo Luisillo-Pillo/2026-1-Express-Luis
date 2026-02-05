@@ -8,6 +8,27 @@ let users = [
     { id: 7, name: "Guillermo" }
 ];
 
+const validateName = (req, res) => {
+    const { name } = req.body;
+    if ( name === undefined || name === null ) {
+        res.status(400).json({ message: "El campo name es obligatorio" });
+        return null;
+    } else if ( name !== undefined) {
+        if (typeof name !== "string") {
+            res.status(400).json({ message: "El campo name debe ser un string" });
+            return null;
+        } else {
+            const trimmed = name.trim();
+            if (trimmed.length < 2) {
+                res.status(400).json({ message: "El campo name debe tener al menos 2 caracteres" });
+                return null;
+            };
+            return trimmed;
+        };
+    };
+    return undefined;
+};
+
 const getUsers = (req, res) => {
     res.json(users);
 };
@@ -30,4 +51,19 @@ const getUserById = (req, res) => {
     return res.json(user);
 };
 
-export { getUsers, getUserById };
+const createUser = (req, res) => {
+    const name = validateName(req, res);
+    if ( name === null || name === undefined) return;
+
+    const nextId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    const newUser = {id:nextId, name};
+    users.push(newUser);
+
+    return res.status(201).json(newUser);
+};
+
+const updateUser = (req, res) => {};
+
+const deleteUser = (req, res) => {};
+
+export { getUsers, getUserById, createUser, updateUser, deleteUser };
