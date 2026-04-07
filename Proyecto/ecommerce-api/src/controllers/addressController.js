@@ -1,7 +1,6 @@
-import express from "express";
 import Address from "../models/Address";
 
-const getUserAddresses = async (req, res) => {
+const getUserAddresses = async (req, res, next) => {
   try {
     const userId = req.user.userId;
 
@@ -12,11 +11,11 @@ const getUserAddresses = async (req, res) => {
 
     res.status(200).json({ addresses });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-const getAddressById = async (req, res) => {
+const getAddressById = async (req, res, next) => {
   try {
     const { addressId } = req.params;
     const userId = req.user.userId;
@@ -28,11 +27,11 @@ const getAddressById = async (req, res) => {
 
     res.status(200).json(address);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const createAddress = async (req, res) => {
+const createAddress = async (req, res, next) => {
   try {
     const {
       name,
@@ -68,11 +67,11 @@ const createAddress = async (req, res) => {
 
     res.status(201).json(newAddress);
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-const updateAddress = async (req, res) => {
+const updateAddress = async (req, res, next) => {
   try {
     const { addressId } = req.params;
     const {
@@ -115,11 +114,11 @@ const updateAddress = async (req, res) => {
 
     res.status(200).json(shipAddress);
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-const deleteAddress = async (req, res) => {
+const deleteAddress = async (req, res, next) => {
   try {
     const { addressId } = req.params;
     const userId = req.user.userId;
@@ -141,7 +140,6 @@ const deleteAddress = async (req, res) => {
   } catch (error) {
     next(error);
   }
-  º;
 };
 
 export {

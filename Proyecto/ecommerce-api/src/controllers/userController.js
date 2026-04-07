@@ -32,7 +32,12 @@ const createUser = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
     const hashPassword = await generatePassword(password);
-    const newUser = await User.create({ name, email, password: hashPassword, role });
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashPassword,
+      role,
+    });
     const userResponse = newUser.toObject();
     delete userResponse.password;
     res.status(201).json(userResponse);
@@ -49,7 +54,7 @@ const updateUser = async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { name, email, password: hashPassword, role },
-      { new: true }
+      { new: true },
     ).select("-password");
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });

@@ -1,19 +1,17 @@
 import Cart from "../models/Cart.js";
 
-//Solo Admins
-async function getCarts(req, res) {
+async function getCarts(req, res, next) {
   try {
     const carts = await Cart.find()
       .populate("user")
       .populate("products.product");
     res.json(carts);
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 }
 
-//Cualquier usuario
-async function getCartById(req, res) {
+async function getCartById(req, res, next) {
   try {
     const id = req.params.id;
     const cart = await Cart.findById(id)
@@ -24,12 +22,11 @@ async function getCartById(req, res) {
     }
     res.json(cart);
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 }
 
-//Cualquier usuario
-async function getCartByUser(req, res) {
+async function getCartByUser(req, res, next) {
   try {
     const userId = req.params.id;
     const cart = await Cart.findOne({ user: userId })
@@ -40,12 +37,11 @@ async function getCartByUser(req, res) {
     }
     res.json(cart);
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 }
 
-//Cualquier usuario
-async function createCart(req, res) {
+async function createCart(req, res, next) {
   try {
     const { user, products } = req.body;
 
@@ -77,11 +73,11 @@ async function createCart(req, res) {
 
     res.status(201).json(newCart);
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 }
 
-async function updateCart(req, res) {
+async function updateCart(req, res, next) {
   try {
     const { id } = req.params;
     const { user, products } = req.body;
@@ -118,11 +114,11 @@ async function updateCart(req, res) {
       return res.status(404).json({ message: "Cart not found" });
     }
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 }
 
-async function deleteCart(req, res) {
+async function deleteCart(req, res, next) {
   try {
     const { id } = req.params;
     const deletedCart = await Cart.findByIdAndDelete(id);
@@ -133,40 +129,41 @@ async function deleteCart(req, res) {
       return res.status(400).json({ message: "Cart not found" });
     }
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 }
 
 async function addProductToCart(req, res, next) {
-    try {
-      const { userId, productId, quantity = 1 } = req.body;
-      let cart = await Cart.findOne({ user: userId });
-      if(!cart){
-        cart = new Cart({
-          user:userId,
-          products:[{product:productId, quantity}]
-        });
+  try {
+    const { userId, productId, quantity = 1 } = req.body;
+    let cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      cart = new Cart({
+        user: userId,
+        products: [{ product: productId, quantity }],
+      });
+    } else {
+      const existingProductIndex = cart.products.findIndex(
+        (item) => item.product.toString() === productId,
+      );
+
+      if (existingProductIndex >= 0) {
+        cart.products[existingProductIndex].quantity += quantity;
       } else {
-        const existingProductsIndex = cart.products.findIndex(item=>item.product.toString()===productId)
-        
-        if (existingProductsIndex >= 0) {
-          cart.products[existingProductsIndex].quantity += quantity;
-        } else {
-          cart.products.push({ product: productId, quantity });
-        };
+        cart.products.push({ product: productId, quantity });
+      }
+    }
 
-      };
+    await cart.save();
+    await cart.populate("user");
+    await cart.populate("products.productId");
 
-      await cart.save();
-      await cart.populate("user");
-      await cart.populate("products:productId");
-
-      res.json(cart);
-        
-    } catch (error) {
-      next(error);
-    };
-};
+    res.json(cart);
+  } catch (error) {
+    next(error);
+  }
+}
 
 export {
   getCarts,
@@ -175,5 +172,5 @@ export {
   createCart,
   updateCart,
   deleteCart,
-  addProductToCart
+  addProductToCart,
 };
